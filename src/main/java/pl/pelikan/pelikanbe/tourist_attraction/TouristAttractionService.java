@@ -1,20 +1,21 @@
 package pl.pelikan.pelikanbe.tourist_attraction;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.offer.OfferService;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class TouristAttractionService {
 
     private final TouristAttractionRepository repository;
 
-    public TouristAttractionService(TouristAttractionRepository repository) {
-        this.repository = repository;
-    }
+    private final OfferService offerService;
 
     public TouristAttraction getAttractionById(Long id) {
-        return repository.findById(id).orElseThrow(RuntimeException::new);
+        return repository.findById(id).orElse(null);
     }
 
     public List<TouristAttraction> getAttractions() {
@@ -22,26 +23,31 @@ public class TouristAttractionService {
     }
 
     public TouristAttraction addAttraction(TouristAttraction attraction) {
+        var offer = attraction.getOffer();
+        if (offer != null && offer.getId() != null) {
+            setOfferById(attraction, offer.getId());
+        }
         return repository.save(attraction);
     }
 
-    public boolean existTouristAttractionById(Long id) {
+    public TouristAttraction updateAttraction(TouristAttraction attraction) {
+        var offer = attraction.getOffer();
+        if (offer != null && offer.getId() != null) {
+            setOfferById(attraction, offer.getId());
+        }
+        return repository.save(attraction);
+    }
+
+    public void deleteAttraction(Long id) {
+        repository.deleteById(id);
+    }
+
+    public boolean existsTouristAttractionById(Long id) {
         return repository.existsById(id);
     }
 
-    public TouristAttraction updateById(Long id, TouristAttraction attraction) {
-        if (existTouristAttractionById(id)) {
-            return repository.save(attraction);
-        } else {
-            throw new RuntimeException();
-        }
-    }
-
-    public void deleteTouristAttractionById(Long id) {
-        if (existTouristAttractionById(id)) {
-            repository.deleteById(id);
-        } else {
-            throw new RuntimeException();
-        }
+    private void setOfferById(TouristAttraction attraction, Long id) {
+        var offer = offerService.getOfferById(id);
+        attraction.setOffer(offer);
     }
 }

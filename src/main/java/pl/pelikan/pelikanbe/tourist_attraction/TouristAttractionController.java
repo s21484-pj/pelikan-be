@@ -1,26 +1,26 @@
 package pl.pelikan.pelikanbe.tourist_attraction;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.pelikan.pelikanbe.exception.InvalidIdException;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/attractions")
+@AllArgsConstructor
 public class TouristAttractionController {
 
     private final TouristAttractionService service;
 
-    public TouristAttractionController(TouristAttractionService service) {
-        this.service = service;
-    }
-
     @GetMapping("/get/{id}")
     public ResponseEntity<TouristAttraction> getAttractionById(@PathVariable Long id) {
-        if (service.existTouristAttractionById(id)) {
+        if (service.existsTouristAttractionById(id)) {
             return ResponseEntity.ok(service.getAttractionById(id));
         } else {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Attraction " + id);
         }
     }
 
@@ -36,21 +36,25 @@ public class TouristAttractionController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<TouristAttraction> updateAttraction(
-            @PathVariable Long id, @RequestBody TouristAttraction attraction) {
-        if (service.existTouristAttractionById(id)) {
-            return ResponseEntity.ok(service.updateById(id, attraction));
+            @PathVariable Long id, @RequestBody TouristAttraction attraction) throws InvalidIdException {
+        if (service.existsTouristAttractionById(id)) {
+            if (id.equals(attraction.getId())) {
+                return ResponseEntity.ok(service.updateAttraction(attraction));
+            } else {
+                throw new InvalidIdException(id + " " + attraction.getId());
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Attraction " + id);
         }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAttractionById(@PathVariable Long id) {
-        if (service.existTouristAttractionById(id)) {
-            service.deleteTouristAttractionById(id);
+        if (service.existsTouristAttractionById(id)) {
+            service.deleteAttraction(id);
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new EntityNotFoundException("Attraction " + id);
         }
     }
 }
