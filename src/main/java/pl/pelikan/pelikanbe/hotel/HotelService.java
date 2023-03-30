@@ -28,6 +28,16 @@ public class HotelService {
     }
 
     public void deleteHotel(Long id) {
+        var hotel = getHotelById(id);
+        if (hotel.getOffer() != null) {
+            var offer = hotel.getOffer();
+            offer.setHotel(null);
+        }
+        if (hotel.getPhotos() != null) {
+            for (var photo : hotel.getPhotos()) {
+                photo.setHotel(null);
+            }
+        }
         hotelRepository.deleteById(id);
     }
 
