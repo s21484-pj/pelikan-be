@@ -28,6 +28,11 @@ public class TransportService {
     }
 
     public void deleteTransport(Long id) {
+        var transport = getTransportById(id);
+        if (transport.getOffer() != null) {
+            var offer = transport.getOffer();
+            offer.setTransport(null);
+        }
         repository.deleteById(id);
     }
 
