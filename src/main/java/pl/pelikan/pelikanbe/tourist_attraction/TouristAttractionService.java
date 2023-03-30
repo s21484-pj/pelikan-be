@@ -39,6 +39,12 @@ public class TouristAttractionService {
     }
 
     public void deleteAttraction(Long id) {
+        var attraction = getAttractionById(id);
+        if (attraction.getPhotos() != null) {
+            for (var photo : attraction.getPhotos()) {
+                photo.setTouristAttraction(null);
+            }
+        }
         repository.deleteById(id);
     }
 
