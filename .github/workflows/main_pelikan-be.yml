@@ -25,7 +25,7 @@ jobs:
         run: mvn clean install -Dmaven.test.skip=true
 
       - name: log
-        run: echo '${{ github.workspace }}/target/*.war'
+        run: ls '${{ github.workspace }}/target'
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
