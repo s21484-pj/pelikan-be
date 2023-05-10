@@ -53,4 +53,4 @@ jobs:
           app-name: 'pelikan-be'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7377EB9297E84A239AB8E5ABB4DD9593 }}
-          package: '*.war'
+          package: '*.jar'
