@@ -1,13 +1,18 @@
 package pl.pelikan.pelikanbe.photo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import pl.pelikan.pelikanbe.hotel.Hotel;
 import pl.pelikan.pelikanbe.tourist_attraction.TouristAttraction;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+//@RequiredArgsConstructor
 public class Photo {
 
     @Id
@@ -16,10 +21,12 @@ public class Photo {
 
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference(value = "hotel_photo")
     private Hotel hotel;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
     @JsonBackReference(value = "attraction_photo")
     private TouristAttraction touristAttraction;

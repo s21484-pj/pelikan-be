@@ -2,9 +2,14 @@ package pl.pelikan.pelikanbe.offer;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.hashtag.Hashtag;
+import pl.pelikan.pelikanbe.hashtag.HashtagService;
 import pl.pelikan.pelikanbe.hotel.HotelService;
 import pl.pelikan.pelikanbe.transport.TransportService;
+import pl.pelikan.pelikanbe.user.User;
+import pl.pelikan.pelikanbe.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +21,10 @@ public class OfferService {
     private final HotelService hotelService;
 
     private final TransportService transportService;
+
+    private final HashtagService hashtagService;
+
+    private final UserService userService;
 
     public Offer getOfferById(Long id) {
         return offerRepository.findById(id).orElse(null);
@@ -34,6 +43,12 @@ public class OfferService {
         if (transport != null && transport.getId() != null) {
             setTransportById(offer, transport.getId());
         }
+        if (offer.getHashtags() != null) {
+            setHashtags(offer);
+        }
+        if (offer.getUsers() != null) {
+            setUsers(offer);
+        }
         return offerRepository.save(offer);
     }
 
@@ -45,6 +60,12 @@ public class OfferService {
         var transport = offer.getTransport();
         if (transport != null && transport.getId() != null) {
             setTransportById(offer, transport.getId());
+        }
+        if (offer.getHashtags() != null) {
+            setHashtags(offer);
+        }
+        if (offer.getUsers() != null) {
+            setUsers(offer);
         }
         return offerRepository.save(offer);
     }
@@ -62,6 +83,16 @@ public class OfferService {
                 attraction.setOffer(null);
             }
         }
+        if (offer.getHashtags() != null) {
+            for (var hashtag : offer.getHashtags()) {
+                hashtag.setOffers(null);
+            }
+        }
+        if (offer.getUsers() != null) {
+            for (var user : offer.getUsers()) {
+                user.setOffers(null);
+            }
+        }
         offerRepository.deleteById(id);
     }
 
@@ -77,5 +108,27 @@ public class OfferService {
     private void setTransportById(Offer offer, Long id) {
         var transport = transportService.getTransportById(id);
         offer.setTransport(transport);
+    }
+
+    private void setHashtags(Offer offer) {
+        List<Hashtag> hashtags = new ArrayList<>();
+        for (Hashtag tempHashtag : offer.getHashtags()) {
+            if (tempHashtag.getId() != null) {
+                Hashtag hashtag = hashtagService.getHashtagById(tempHashtag.getId());
+                hashtags.add(hashtag);
+            }
+        }
+        offer.setHashtags(hashtags);
+    }
+
+    private void setUsers(Offer offer) {
+        List<User> users = new ArrayList<>();
+        for (User tempUser : offer.getUsers()) {
+            if (tempUser.getId() != null) {
+                User user = userService.getUserById(tempUser.getId());
+                users.add(user);
+            }
+        }
+        offer.setUsers(users);
     }
 }

@@ -2,11 +2,15 @@ package pl.pelikan.pelikanbe.transport;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import pl.pelikan.pelikanbe.offer.Offer;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+//@RequiredArgsConstructor
 public class Transport {
 
     @Id
@@ -16,9 +20,12 @@ public class Transport {
     @Enumerated(EnumType.STRING)
     private TransportType transportType;
 
+    private String name;
+
     private String description;
 
-    @OneToOne(mappedBy = "transport", fetch = FetchType.LAZY)
+//    @OneToOne(mappedBy = "transport", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "transport")
     @JsonBackReference(value = "offer_transport")
     private Offer offer;
 }

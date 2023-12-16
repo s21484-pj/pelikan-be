@@ -3,7 +3,7 @@ package pl.pelikan.pelikanbe.tourist_attraction;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import pl.pelikan.pelikanbe.offer.Offer;
 import pl.pelikan.pelikanbe.photo.Photo;
 
@@ -11,7 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+//@RequiredArgsConstructor
 public class TouristAttraction {
 
     @Id
@@ -24,11 +28,13 @@ public class TouristAttraction {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonBackReference(value = "offer_attraction")
     private Offer offer;
 
-    @OneToMany(mappedBy = "touristAttraction", cascade = CascadeType.MERGE)
+//    @OneToMany(mappedBy = "touristAttraction", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "touristAttraction")
     @JsonManagedReference(value = "attraction_photo")
     private List<Photo> photos;
 }
