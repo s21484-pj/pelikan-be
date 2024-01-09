@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 public class TouristAttraction {
 
     @Id
@@ -28,12 +27,10 @@ public class TouristAttraction {
 
     private String description;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
     @JsonBackReference(value = "offer_attraction")
     private Offer offer;
 
-//    @OneToMany(mappedBy = "touristAttraction", cascade = CascadeType.MERGE)
     @OneToMany(mappedBy = "touristAttraction")
     @JsonManagedReference(value = "attraction_photo")
     private List<Photo> photos;

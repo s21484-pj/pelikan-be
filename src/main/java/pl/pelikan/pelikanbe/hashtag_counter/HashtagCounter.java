@@ -1,9 +1,11 @@
 package pl.pelikan.pelikanbe.hashtag_counter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.pelikan.pelikanbe.hashtag.Hashtag;
 import pl.pelikan.pelikanbe.user.User;
 
@@ -12,7 +14,6 @@ import pl.pelikan.pelikanbe.user.User;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 public class HashtagCounter {
 
     @Id
@@ -21,13 +22,11 @@ public class HashtagCounter {
 
     private int count;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
-    @JsonBackReference(value = "counter_user")
+    @JsonBackReference(value = "user_counter")
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne
-    @JsonBackReference(value = "counter_hashtag")
+    @JsonBackReference(value = "hashtag_counter")
     private Hashtag hashtag;
 }

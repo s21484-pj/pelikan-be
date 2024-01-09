@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pelikan.pelikanbe.exception.InvalidIdException;
+import pl.pelikan.pelikanbe.exception.UserAlreadyExistsException;
 
 import java.util.List;
 
@@ -30,8 +31,12 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-        return ResponseEntity.ok(service.addUser(user));
+    public ResponseEntity<User> addUser(@RequestBody User user) throws UserAlreadyExistsException {
+        if (service.getUserByEmail(user.getEmail()) == null) {
+            return ResponseEntity.ok(service.addUser(user));
+        } else {
+            throw new UserAlreadyExistsException(user.getEmail());
+        }
     }
 
     @PutMapping("/update/{id}")

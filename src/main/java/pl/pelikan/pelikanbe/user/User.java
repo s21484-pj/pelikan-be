@@ -1,11 +1,13 @@
 package pl.pelikan.pelikanbe.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounter;
 import pl.pelikan.pelikanbe.offer.Offer;
 
@@ -17,8 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIdentityInfo(
+        scope = User.class,
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "offers")
+        property = "id")
 public class User {
 
     @Id
@@ -42,12 +45,12 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            name = "users_offers",
+            name = "user_offer",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "offer_id"))
     private List<Offer> offers;
 
     @OneToMany(mappedBy = "user")
-    @JsonManagedReference(value = "counter_user")
+    @JsonManagedReference(value = "user_counter")
     private List<HashtagCounter> hashTagCounters;
 }

@@ -10,7 +10,6 @@ import pl.pelikan.pelikanbe.offer.Offer;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 public class Transport {
 
     @Id
@@ -24,7 +23,6 @@ public class Transport {
 
     private String description;
 
-//    @OneToOne(mappedBy = "transport", fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "transport")
     @JsonBackReference(value = "offer_transport")
     private Offer offer;

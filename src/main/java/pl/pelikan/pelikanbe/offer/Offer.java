@@ -24,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIdentityInfo(
+        scope = Offer.class,
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
 public class Offer {
@@ -47,12 +48,10 @@ public class Offer {
     private int quantity;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id")
     @JsonManagedReference(value = "offer_hotel")
     private Hotel hotel;
 
     @OneToOne
-    @JoinColumn(referencedColumnName = "id")
     @JsonManagedReference(value = "offer_transport")
     private Transport transport;
 
@@ -60,11 +59,7 @@ public class Offer {
     @JsonManagedReference(value = "offer_attraction")
     private List<TouristAttraction> attractions;
 
-    @ManyToMany
-    @JoinTable(
-            name = "offer_hashtags",
-            joinColumns = @JoinColumn(name = "offer_id"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id"))
+    @ManyToMany(mappedBy = "offers")
     private List<Hashtag> hashtags;
 
     @ManyToMany(mappedBy = "offers")

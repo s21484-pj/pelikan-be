@@ -1,19 +1,19 @@
 package pl.pelikan.pelikanbe.offer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pelikan.pelikanbe.hashtag.Hashtag;
-import pl.pelikan.pelikanbe.hashtag.HashtagService;
+import pl.pelikan.pelikanbe.hotel.Hotel;
 import pl.pelikan.pelikanbe.hotel.HotelService;
+import pl.pelikan.pelikanbe.tourist_attraction.TouristAttraction;
+import pl.pelikan.pelikanbe.transport.Transport;
 import pl.pelikan.pelikanbe.transport.TransportService;
 import pl.pelikan.pelikanbe.user.User;
-import pl.pelikan.pelikanbe.user.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OfferService {
 
     private final OfferRepository offerRepository;
@@ -21,10 +21,6 @@ public class OfferService {
     private final HotelService hotelService;
 
     private final TransportService transportService;
-
-    private final HashtagService hashtagService;
-
-    private final UserService userService;
 
     public Offer getOfferById(Long id) {
         return offerRepository.findById(id).orElse(null);
@@ -35,38 +31,14 @@ public class OfferService {
     }
 
     public Offer addOffer(Offer offer) {
-        var hotel = offer.getHotel();
-        if (hotel != null && hotel.getId() != null) {
-            setHotelById(offer, hotel.getId());
-        }
-        var transport = offer.getTransport();
-        if (transport != null && transport.getId() != null) {
-            setTransportById(offer, transport.getId());
-        }
-        if (offer.getHashtags() != null) {
-            setHashtags(offer);
-        }
-        if (offer.getUsers() != null) {
-            setUsers(offer);
-        }
+        setHotel(offer);
+        setTransport(offer);
         return offerRepository.save(offer);
     }
 
     public Offer updateOffer(Offer offer) {
-        var hotel = offer.getHotel();
-        if (hotel != null && hotel.getId() != null) {
-            setHotelById(offer, hotel.getId());
-        }
-        var transport = offer.getTransport();
-        if (transport != null && transport.getId() != null) {
-            setTransportById(offer, transport.getId());
-        }
-        if (offer.getHashtags() != null) {
-            setHashtags(offer);
-        }
-        if (offer.getUsers() != null) {
-            setUsers(offer);
-        }
+        setHotel(offer);
+        setTransport(offer);
         return offerRepository.save(offer);
     }
 
@@ -79,18 +51,22 @@ public class OfferService {
             offer.setTransport(null);
         }
         if (offer.getAttractions() != null) {
-            for (var attraction : offer.getAttractions()) {
+            for (TouristAttraction attraction : offer.getAttractions()) {
                 attraction.setOffer(null);
             }
         }
         if (offer.getHashtags() != null) {
-            for (var hashtag : offer.getHashtags()) {
-                hashtag.setOffers(null);
+            for (Hashtag hashtag : offer.getHashtags()) {
+                List<Offer> offers = hashtag.getOffers();
+                offers.remove(offer);
+                hashtag.setOffers(offers);
             }
         }
         if (offer.getUsers() != null) {
-            for (var user : offer.getUsers()) {
-                user.setOffers(null);
+            for (User user : offer.getUsers()) {
+                List<Offer> offers = user.getOffers();
+                offers.remove(offer);
+                user.setOffers(offers);
             }
         }
         offerRepository.deleteById(id);
@@ -100,35 +76,19 @@ public class OfferService {
         return offerRepository.existsById(id);
     }
 
-    private void setHotelById(Offer offer, Long id) {
-        var hotel = hotelService.getHotelById(id);
-        offer.setHotel(hotel);
-    }
-
-    private void setTransportById(Offer offer, Long id) {
-        var transport = transportService.getTransportById(id);
-        offer.setTransport(transport);
-    }
-
-    private void setHashtags(Offer offer) {
-        List<Hashtag> hashtags = new ArrayList<>();
-        for (Hashtag tempHashtag : offer.getHashtags()) {
-            if (tempHashtag.getId() != null) {
-                Hashtag hashtag = hashtagService.getHashtagById(tempHashtag.getId());
-                hashtags.add(hashtag);
-            }
+    private void setHotel(Offer offer) {
+        Hotel initHotel = offer.getHotel();
+        if (initHotel != null && initHotel.getId() != null) {
+            Hotel hotel = hotelService.getHotelById(initHotel.getId());
+            offer.setHotel(hotel);
         }
-        offer.setHashtags(hashtags);
     }
 
-    private void setUsers(Offer offer) {
-        List<User> users = new ArrayList<>();
-        for (User tempUser : offer.getUsers()) {
-            if (tempUser.getId() != null) {
-                User user = userService.getUserById(tempUser.getId());
-                users.add(user);
-            }
+    private void setTransport(Offer offer) {
+        Transport initTransport = offer.getTransport();
+        if (initTransport != null && initTransport.getId() != null) {
+            Transport transport = transportService.getTransportById(initTransport.getId());
+            offer.setTransport(transport);
         }
-        offer.setUsers(users);
     }
 }

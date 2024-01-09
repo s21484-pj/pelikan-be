@@ -2,7 +2,9 @@ package pl.pelikan.pelikanbe.photo;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.hotel.Hotel;
 import pl.pelikan.pelikanbe.hotel.HotelService;
+import pl.pelikan.pelikanbe.tourist_attraction.TouristAttraction;
 import pl.pelikan.pelikanbe.tourist_attraction.TouristAttractionService;
 
 import java.util.List;
@@ -26,26 +28,14 @@ public class PhotoService {
     }
 
     public Photo addPhoto(Photo photo) {
-        var hotel = photo.getHotel();
-        if (hotel != null && hotel.getId() != null) {
-            setHotelById(photo, hotel.getId());
-        }
-        var attraction = photo.getTouristAttraction();
-        if (attraction != null && attraction.getId() != null) {
-            setAttractionById(photo, attraction.getId());
-        }
+        setHotel(photo);
+        setAttraction(photo);
         return repository.save(photo);
     }
 
     public Photo updatePhoto(Photo photo) {
-        var hotel = photo.getHotel();
-        if (hotel != null && hotel.getId() != null) {
-            setHotelById(photo, hotel.getId());
-        }
-        var attraction = photo.getTouristAttraction();
-        if (attraction != null && attraction.getId() != null) {
-            setAttractionById(photo, attraction.getId());
-        }
+        setHotel(photo);
+        setAttraction(photo);
         return repository.save(photo);
     }
 
@@ -57,13 +47,19 @@ public class PhotoService {
         return repository.existsById(id);
     }
 
-    private void setHotelById(Photo photo, Long id) {
-        var hotel = hotelService.getHotelById(id);
-        photo.setHotel(hotel);
+    private void setHotel(Photo photo) {
+        Hotel initHotel = photo.getHotel();
+        if (initHotel != null && initHotel.getId() != null) {
+            Hotel hotel = hotelService.getHotelById(initHotel.getId());
+            photo.setHotel(hotel);
+        }
     }
 
-    private void setAttractionById(Photo photo, Long id) {
-        var attraction = attractionService.getAttractionById(id);
-        photo.setTouristAttraction(attraction);
+    private void setAttraction(Photo photo) {
+        TouristAttraction initAttraction = photo.getTouristAttraction();
+        if (initAttraction != null && initAttraction.getId() != null) {
+            TouristAttraction attraction = attractionService.getAttractionById(initAttraction.getId());
+            photo.setTouristAttraction(attraction);
+        }
     }
 }

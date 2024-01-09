@@ -19,8 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIdentityInfo(
+        scope = Hashtag.class,
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "offers")
+        property = "id")
 public class Hashtag {
 
     @Id
@@ -31,9 +32,13 @@ public class Hashtag {
     private String name;
 
     @OneToMany(mappedBy = "hashtag")
-    @JsonManagedReference(value = "counter_hashtag")
+    @JsonManagedReference(value = "hashtag_counter")
     private List<HashtagCounter> hashtagCounters;
 
-    @ManyToMany(mappedBy = "hashtags")
+    @ManyToMany
+    @JoinTable(
+            name = "hashtag_offer",
+            joinColumns = @JoinColumn(name = "hashtag_id"),
+            inverseJoinColumns = @JoinColumn(name = "offer_id"))
     private List<Offer> offers;
 }

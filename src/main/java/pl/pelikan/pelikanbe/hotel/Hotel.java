@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-//@RequiredArgsConstructor
 public class Hotel {
 
     @Id
@@ -29,12 +28,10 @@ public class Hotel {
 
     private String description;
 
-//    @OneToOne(mappedBy = "hotel", fetch = FetchType.LAZY)
     @OneToOne(mappedBy = "hotel")
     @JsonBackReference(value = "offer_hotel")
     private Offer offer;
 
-//    @OneToMany(mappedBy = "hotel", cascade = CascadeType.MERGE)
     @OneToMany(mappedBy = "hotel")
     @JsonManagedReference(value = "hotel_photo")
     private List<Photo> photos;

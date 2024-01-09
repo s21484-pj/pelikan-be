@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.pelikan.pelikanbe.exception.HashtagAlreadyExistsException;
 import pl.pelikan.pelikanbe.exception.InvalidIdException;
 
 import java.util.List;
@@ -30,8 +31,12 @@ public class HashtagController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Hashtag> addHashtag(@RequestBody Hashtag hashtag) {
-        return ResponseEntity.ok(service.addHashtag(hashtag));
+    public ResponseEntity<Hashtag> addHashtag(@RequestBody Hashtag hashtag) throws HashtagAlreadyExistsException {
+        if (service.getHashtagByName(hashtag.getName()) == null) {
+            return ResponseEntity.ok(service.addHashtag(hashtag));
+        } else {
+            throw new HashtagAlreadyExistsException(hashtag.getName());
+        }
     }
 
     @PutMapping("/update/{id}")

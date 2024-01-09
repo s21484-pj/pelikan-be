@@ -1,22 +1,28 @@
 package pl.pelikan.pelikanbe.user;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.pelikan.pelikanbe.hashtag.Hashtag;
 import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounter;
 import pl.pelikan.pelikanbe.offer.Offer;
+import pl.pelikan.pelikanbe.offer.OfferService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final OfferService offerService;
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     public List<User> getUsers() {
@@ -24,10 +30,16 @@ public class UserService {
     }
 
     public User addUser(User user) {
+        if (user.getOffers() != null) {
+            setOffers(user);
+        }
         return userRepository.save(user);
     }
 
     public User updateUser(User user) {
+        if (user.getOffers() != null) {
+            setOffers(user);
+        }
         return userRepository.save(user);
     }
 
@@ -50,5 +62,16 @@ public class UserService {
 
     public boolean existsUserById(Long id) {
         return userRepository.existsById(id);
+    }
+
+    private void setOffers(User user) {
+        List<Offer> offers = new ArrayList<>();
+        for (Offer initOffer : user.getOffers()) {
+            if (initOffer.getId() != null) {
+                Offer offer = offerService.getOfferById(initOffer.getId());
+                offers.add(offer);
+            }
+        }
+        user.setOffers(offers);
     }
 }
