@@ -22,4 +22,16 @@ public class GlobalExceptionHandler {
         var message = "Provided identifiers must be the same. Actual: " + ids[0] + ", " + ids[1];
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiError(HttpStatus.BAD_REQUEST, message));
     }
+
+    @ExceptionHandler(HashtagAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleHashtagAlreadyExists(HashtagAlreadyExistsException exception) {
+        String message = "Hashtag " + exception.getMessage() + " already exists.";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(HttpStatus.CONFLICT, message));
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyExists(UserAlreadyExistsException exception) {
+        String message = "User with email '" + exception.getMessage() + "' already exists.";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(HttpStatus.CONFLICT, message));
+    }
 }

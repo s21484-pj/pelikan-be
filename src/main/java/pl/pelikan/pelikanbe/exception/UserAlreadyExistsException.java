@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class InvalidIdException extends Exception {
+public class UserAlreadyExistsException extends Exception {
 
     private final String message;
 }

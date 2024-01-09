@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class InvalidIdException extends Exception {
+public class HashtagAlreadyExistsException extends Exception {
 
     private final String message;
 }
