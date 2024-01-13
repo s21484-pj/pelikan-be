@@ -43,33 +43,35 @@ public class OfferService {
     }
 
     public void deleteOffer(Long id) {
-        var offer = getOfferById(id);
-        if (offer.getHotel() != null) {
-            offer.setHotel(null);
-        }
-        if (offer.getTransport() != null) {
-            offer.setTransport(null);
-        }
-        if (offer.getAttractions() != null) {
-            for (TouristAttraction attraction : offer.getAttractions()) {
-                attraction.setOffer(null);
+        Offer offer = getOfferById(id);
+        if (offer != null) {
+            if (offer.getHotel() != null) {
+                offer.setHotel(null);
             }
-        }
-        if (offer.getHashtags() != null) {
-            for (Hashtag hashtag : offer.getHashtags()) {
-                List<Offer> offers = hashtag.getOffers();
-                offers.remove(offer);
-                hashtag.setOffers(offers);
+            if (offer.getTransport() != null) {
+                offer.setTransport(null);
             }
-        }
-        if (offer.getUsers() != null) {
-            for (User user : offer.getUsers()) {
-                List<Offer> offers = user.getOffers();
-                offers.remove(offer);
-                user.setOffers(offers);
+            if (offer.getAttractions() != null) {
+                for (TouristAttraction attraction : offer.getAttractions()) {
+                    attraction.setOffer(null);
+                }
             }
+            if (offer.getHashtags() != null) {
+                for (Hashtag hashtag : offer.getHashtags()) {
+                    List<Offer> offers = hashtag.getOffers();
+                    offers.remove(offer);
+                    hashtag.setOffers(offers);
+                }
+            }
+            if (offer.getUsers() != null) {
+                for (User user : offer.getUsers()) {
+                    List<Offer> offers = user.getOffers();
+                    offers.remove(offer);
+                    user.setOffers(offers);
+                }
+            }
+            offerRepository.deleteById(id);
         }
-        offerRepository.deleteById(id);
     }
 
     public boolean existsOfferById(Long id) {

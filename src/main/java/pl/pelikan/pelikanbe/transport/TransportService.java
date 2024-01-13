@@ -2,6 +2,7 @@ package pl.pelikan.pelikanbe.transport;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.offer.Offer;
 
 import java.util.List;
 
@@ -28,12 +29,14 @@ public class TransportService {
     }
 
     public void deleteTransport(Long id) {
-        var transport = getTransportById(id);
-        if (transport.getOffer() != null) {
-            var offer = transport.getOffer();
-            offer.setTransport(null);
+        Transport transport = getTransportById(id);
+        if (transport != null) {
+            if (transport.getOffer() != null) {
+                Offer offer = transport.getOffer();
+                offer.setTransport(null);
+            }
+            repository.deleteById(id);
         }
-        repository.deleteById(id);
     }
 
     public boolean existsTransportById(Long id) {

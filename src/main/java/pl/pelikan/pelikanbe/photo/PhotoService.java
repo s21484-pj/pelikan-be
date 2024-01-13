@@ -40,7 +40,9 @@ public class PhotoService {
     }
 
     public void deletePhoto(Long id) {
-        repository.deleteById(id);
+        if (existsPhotoById(id)) {
+            repository.deleteById(id);
+        }
     }
 
     public boolean existsPhotoById(Long id) {
@@ -58,7 +60,7 @@ public class PhotoService {
     private void setAttraction(Photo photo) {
         TouristAttraction initAttraction = photo.getTouristAttraction();
         if (initAttraction != null && initAttraction.getId() != null) {
-            TouristAttraction attraction = attractionService.getAttractionById(initAttraction.getId());
+            TouristAttraction attraction = attractionService.getTouristAttractionById(initAttraction.getId());
             photo.setTouristAttraction(attraction);
         }
     }

@@ -45,19 +45,21 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        if (user.getHashTagCounters() != null) {
-            for (HashtagCounter hashtagCounter : user.getHashTagCounters()) {
-                hashtagCounter.setUser(null);
+        if (user != null) {
+            if (user.getHashTagCounters() != null) {
+                for (HashtagCounter hashtagCounter : user.getHashTagCounters()) {
+                    hashtagCounter.setUser(null);
+                }
             }
-        }
-        if (user.getOffers() != null) {
-            for (Offer offer : user.getOffers()) {
-                List<User> users = offer.getUsers();
-                users.remove(user);
-                offer.setUsers(users);
+            if (user.getOffers() != null) {
+                for (Offer offer : user.getOffers()) {
+                    List<User> users = offer.getUsers();
+                    users.remove(user);
+                    offer.setUsers(users);
+                }
             }
+            userRepository.deleteById(id);
         }
-        userRepository.deleteById(id);
     }
 
     public boolean existsUserById(Long id) {

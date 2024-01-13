@@ -2,6 +2,8 @@ package pl.pelikan.pelikanbe.hotel;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.offer.Offer;
+import pl.pelikan.pelikanbe.photo.Photo;
 
 import java.util.List;
 
@@ -28,17 +30,19 @@ public class HotelService {
     }
 
     public void deleteHotel(Long id) {
-        var hotel = getHotelById(id);
-        if (hotel.getOffer() != null) {
-            var offer = hotel.getOffer();
-            offer.setHotel(null);
-        }
-        if (hotel.getPhotos() != null) {
-            for (var photo : hotel.getPhotos()) {
-                photo.setHotel(null);
+        Hotel hotel = getHotelById(id);
+        if (hotel != null) {
+            if (hotel.getOffer() != null) {
+                Offer offer = hotel.getOffer();
+                offer.setHotel(null);
             }
+            if (hotel.getPhotos() != null) {
+                for (Photo photo : hotel.getPhotos()) {
+                    photo.setHotel(null);
+                }
+            }
+            hotelRepository.deleteById(id);
         }
-        hotelRepository.deleteById(id);
     }
 
     public boolean existsHotelById(Long id) {

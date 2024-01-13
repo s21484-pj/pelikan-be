@@ -53,13 +53,15 @@ public class HashtagCounterService {
 
     public void deleteHashtagCounter(Long id) {
         HashtagCounter hashtagCounter = getHashtagCounterById(id);
-        if (hashtagCounter.getUser() != null) {
-            hashtagCounter.setUser(null);
+        if (hashtagCounter != null) {
+            if (hashtagCounter.getUser() != null) {
+                hashtagCounter.setUser(null);
+            }
+            if (hashtagCounter.getHashtag() != null) {
+                hashtagCounter.setHashtag(null);
+            }
+            repository.deleteById(id);
         }
-        if (hashtagCounter.getHashtag() != null) {
-            hashtagCounter.setHashtag(null);
-        }
-        repository.deleteById(id);
     }
 
     public boolean existsHashtagCounterById(Long id) {

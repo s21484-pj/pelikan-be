@@ -18,7 +18,7 @@ public class TouristAttractionController {
     @GetMapping("/get/{id}")
     public ResponseEntity<TouristAttraction> getAttractionById(@PathVariable Long id) {
         if (service.existsTouristAttractionById(id)) {
-            return ResponseEntity.ok(service.getAttractionById(id));
+            return ResponseEntity.ok(service.getTouristAttractionById(id));
         } else {
             throw new EntityNotFoundException("Attraction " + id);
         }
@@ -26,12 +26,12 @@ public class TouristAttractionController {
 
     @GetMapping("/list")
     public ResponseEntity<List<TouristAttraction>> getAttractions() {
-        return ResponseEntity.ok(service.getAttractions());
+        return ResponseEntity.ok(service.getTouristAttractions());
     }
 
     @PostMapping("/add")
     public ResponseEntity<TouristAttraction> addAttraction(@RequestBody TouristAttraction attraction) {
-        return ResponseEntity.ok(service.addAttraction(attraction));
+        return ResponseEntity.ok(service.addTouristAttraction(attraction));
     }
 
     @PutMapping("/update/{id}")
@@ -39,7 +39,7 @@ public class TouristAttractionController {
             @PathVariable Long id, @RequestBody TouristAttraction attraction) throws InvalidIdException {
         if (service.existsTouristAttractionById(id)) {
             if (id.equals(attraction.getId())) {
-                return ResponseEntity.ok(service.updateAttraction(attraction));
+                return ResponseEntity.ok(service.updateTouristAttraction(attraction));
             } else {
                 throw new InvalidIdException(id + " " + attraction.getId());
             }
@@ -51,7 +51,7 @@ public class TouristAttractionController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAttractionById(@PathVariable Long id) {
         if (service.existsTouristAttractionById(id)) {
-            service.deleteAttraction(id);
+            service.deleteTouristAttraction(id);
             return ResponseEntity.noContent().build();
         } else {
             throw new EntityNotFoundException("Attraction " + id);
