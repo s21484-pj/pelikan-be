@@ -67,4 +67,9 @@ public class UserController {
     public ResponseEntity<List<Offer>> getBestFittingOffersForGivenUser(@PathVariable Long userId) {
         return ResponseEntity.ok(service.getBestFittingOffersForGivenUser(userId));
     }
+
+    @GetMapping("/offersHistory/{userId}")
+    public ResponseEntity<List<Offer>> getOffersHistoryForGivenUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.getOffersHistoryForGivenUser(userId));
+    }
 }

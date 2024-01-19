@@ -1,5 +1,6 @@
 package pl.pelikan.pelikanbe.user;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pelikan.pelikanbe.hashtag.Hashtag;
@@ -103,7 +104,18 @@ public class UserService {
                         .limit(12)
                         .forEach(bestFittingOffers::add);
             }
+        } else {
+            throw new EntityNotFoundException("User " + userId);
         }
         return bestFittingOffers;
+    }
+
+    public List<Offer> getOffersHistoryForGivenUser(Long userId) {
+        User user = getUserById(userId);
+        if (user != null) {
+            return user.getOffers();
+        } else {
+            throw new EntityNotFoundException("User " + userId);
+        }
     }
 }
