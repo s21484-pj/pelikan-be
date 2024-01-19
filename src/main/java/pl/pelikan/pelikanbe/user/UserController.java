@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.pelikan.pelikanbe.exception.InvalidIdException;
 import pl.pelikan.pelikanbe.exception.UserAlreadyExistsException;
+import pl.pelikan.pelikanbe.offer.Offer;
 
 import java.util.List;
 
@@ -60,5 +61,10 @@ public class UserController {
         } else {
             throw new EntityNotFoundException("User " + id);
         }
+    }
+
+    @GetMapping("/getBestFittingOffersForGivenUser/{userId}")
+    public ResponseEntity<List<Offer>> getBestFittingOffersForGivenUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(service.getBestFittingOffersForGivenUser(userId));
     }
 }

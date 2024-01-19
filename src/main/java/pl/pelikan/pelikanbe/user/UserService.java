@@ -2,11 +2,13 @@ package pl.pelikan.pelikanbe.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.pelikan.pelikanbe.hashtag.Hashtag;
 import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounter;
 import pl.pelikan.pelikanbe.offer.Offer;
 import pl.pelikan.pelikanbe.offer.OfferService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -75,5 +77,33 @@ public class UserService {
             }
         }
         user.setOffers(offers);
+    }
+
+    public List<Offer> getBestFittingOffersForGivenUser(Long userId) {
+        List<Offer> bestFittingOffers = new ArrayList<>();
+        User user = getUserById(userId);
+        if (user != null) {
+            List<HashtagCounter> hashtagCounters = user.getHashTagCounters();
+            List<Offer> offers = offerService.getOffers();
+            if (hashtagCounters.size() > 0) {
+                List<HashtagCounter> sortedList = hashtagCounters.stream()
+                        .sorted(Comparator.comparingInt(HashtagCounter::getCount).reversed())
+                        .toList();
+                for (HashtagCounter hashtagCounter : sortedList) {
+                    Hashtag hashtag = hashtagCounter.getHashtag();
+                    if (hashtag != null) {
+                        offers.stream()
+                                .filter(offer -> !bestFittingOffers.contains(offer))
+                                .filter(offer -> offer.getHashtags().contains(hashtag))
+                                .forEach(bestFittingOffers::add);
+                    }
+                }
+            } else {
+                offers.stream()
+                        .limit(12)
+                        .forEach(bestFittingOffers::add);
+            }
+        }
+        return bestFittingOffers;
     }
 }
