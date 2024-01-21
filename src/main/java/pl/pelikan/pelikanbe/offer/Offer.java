@@ -1,8 +1,7 @@
 package pl.pelikan.pelikanbe.offer;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +22,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIdentityInfo(
-        scope = Offer.class,
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Offer {
 
     @Id
@@ -62,6 +57,7 @@ public class Offer {
     @ManyToMany(mappedBy = "offers")
     private List<Hashtag> hashtags;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "offers")
     private List<User> users;
 }

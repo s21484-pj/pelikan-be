@@ -1,5 +1,6 @@
 package pl.pelikan.pelikanbe.hashtag;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,6 @@ public class Hashtag {
             name = "hashtag_offer",
             joinColumns = @JoinColumn(name = "hashtag_id"),
             inverseJoinColumns = @JoinColumn(name = "offer_id"))
+    @JsonIgnore
     private List<Offer> offers;
 }
