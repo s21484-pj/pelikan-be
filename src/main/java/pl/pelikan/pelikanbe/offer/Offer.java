@@ -2,6 +2,7 @@ package pl.pelikan.pelikanbe.offer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,9 +56,10 @@ public class Offer {
     private List<TouristAttraction> attractions;
 
     @ManyToMany(mappedBy = "offers")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Hashtag> hashtags;
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "offers")
+    @JsonIgnore
     private List<User> users;
 }
