@@ -77,4 +77,9 @@ public class UserController {
     public ResponseEntity<Offer> buyOffer(@PathVariable Long userId, @PathVariable Long offerId) {
         return ResponseEntity.ok(service.buyOffer(userId, offerId));
     }
+
+    @GetMapping("/login/{email}/{password}")
+    public ResponseEntity<User> login(@PathVariable String email, @PathVariable String password) {
+        return ResponseEntity.ok(service.login(email, password));
+    }
 }

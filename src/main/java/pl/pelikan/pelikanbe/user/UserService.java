@@ -149,4 +149,13 @@ public class UserService {
             throw new EntityNotFoundException("User/Offer " + userId + "/" + offerId);
         }
     }
+
+    public User login(String email, String password) {
+        User user = userRepository.findUserByEmail(email);
+        if (user.getPassword().equals(password)) {
+            return user;
+        } else {
+            throw new EntityNotFoundException("User " + email);
+        }
+    }
 }
