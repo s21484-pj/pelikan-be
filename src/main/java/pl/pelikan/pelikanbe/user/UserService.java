@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pelikan.pelikanbe.hashtag.Hashtag;
 import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounter;
+import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounterRepository;
 import pl.pelikan.pelikanbe.offer.Offer;
 import pl.pelikan.pelikanbe.offer.OfferService;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+
+    private final HashtagCounterRepository hashtagCounterRepository;
 
     private final OfferService offerService;
 
@@ -116,6 +119,34 @@ public class UserService {
             return user.getOffers();
         } else {
             throw new EntityNotFoundException("User " + userId);
+        }
+    }
+
+    public Offer buyOffer(Long userId, Long offerId) {
+        User user = getUserById(userId);
+        Offer offer = offerService.getOfferById(offerId);
+        if (user != null && offer != null) {
+            offer.setQuantity(offer.getQuantity() - 1);
+            List<Offer> offers = user.getOffers();
+            offers.add(offer);
+            List<HashtagCounter> hashtagCounters = user.getHashTagCounters();
+            List<Hashtag> offerHashtags = offer.getHashtags();
+            for (Hashtag hashtag : offerHashtags) {
+                HashtagCounter hashtagCounter = HashtagCounter.getHashtagCounterByHashtag(hashtagCounters, hashtag);
+                if (hashtagCounter != null) {
+                    hashtagCounter.setCount(hashtagCounter.getCount() + 1);
+                } else {
+                    hashtagCounter = new HashtagCounter();
+                    hashtagCounter.setCount(1);
+                    hashtagCounter.setHashtag(hashtag);
+                    hashtagCounter.setUser(user);
+                }
+                hashtagCounterRepository.save(hashtagCounter);
+            }
+            userRepository.save(user);
+            return offer;
+        } else {
+            throw new EntityNotFoundException("User/Offer " + userId + "/" + offerId);
         }
     }
 }

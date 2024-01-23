@@ -3,6 +3,7 @@ package pl.pelikan.pelikanbe.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import pl.pelikan.pelikanbe.hashtag_counter.HashtagCounterRepository;
 import pl.pelikan.pelikanbe.offer.OfferService;
 import pl.pelikan.pelikanbe.user.User;
 import pl.pelikan.pelikanbe.user.UserRepository;
@@ -28,8 +29,9 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
+        HashtagCounterRepository hashtagCounterRepository = Mockito.mock(HashtagCounterRepository.class);
         OfferService offerService = Mockito.mock(OfferService.class);
-        userService = new UserService(userRepository, offerService);
+        userService = new UserService(userRepository, hashtagCounterRepository, offerService);
     }
 
     @Test

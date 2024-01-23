@@ -72,4 +72,9 @@ public class UserController {
     public ResponseEntity<List<Offer>> getOffersHistoryForGivenUser(@PathVariable Long userId) {
         return ResponseEntity.ok(service.getOffersHistoryForGivenUser(userId));
     }
+
+    @PostMapping("/buyOffer/{userId}/{offerId}")
+    public ResponseEntity<Offer> buyOffer(@PathVariable Long userId, @PathVariable Long offerId) {
+        return ResponseEntity.ok(service.buyOffer(userId, offerId));
+    }
 }
